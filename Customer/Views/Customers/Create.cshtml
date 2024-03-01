@@ -1,0 +1,186 @@
+﻿@model CustomerDataAccessLayer.Models.CustomerDetail
+
+@{
+    ViewData["Title"] = "Create";
+}
+@{
+    var New = "Create";
+    if (Model.CustomerID > 0)
+    {
+        New = "Update";
+    }
+}
+
+<h1>@New</h1>
+
+<h4>Customer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+       
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="CustomerID" type="hidden" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control"  placeholder="Enter you Name "/>
+                <span asp-validation-for="Name" id="txtName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control"  placeholder="Enter you Address "/>
+                <span asp-validation-for="Address" id="txtAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="phonenumber" class="control-label"></label>
+                <input asp-for="phonenumber" class="form-control" placeholder="Enter you phonenumber"/>
+                <span asp-validation-for="phonenumber" id="txtphonenumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control"  placeholder="Enter you Email "/>
+                <span asp-validation-for="Email" id="txtEmail" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="button" id="Create" value="@New" class="btn btn-primary" />
+            </div>
+       
+    </div>
+</div>
+
+<div>
+    <a asp-action="List">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+
+            $("#Create").click(function () {
+
+
+                debugger
+                if (validate()) {
+
+
+
+                    var name = document.getElementById("Name").value;
+                    var phonenumber = document.getElementById("phonenumber").value;
+                    var email = document.getElementById("Email").value;
+                    var CustomerID = document.getElementById("CustomerID").value;
+                    var address = document.getElementById("Address").value;
+
+
+                    var postData =
+                    {
+                        "Name": name,
+                        "phonenumber": phonenumber,
+                        "Address": address,
+                        "Email": email,
+                        "CustomerID": CustomerID
+
+
+                    }
+
+
+                    debugger;
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Customers/Create",
+                        data: postData,
+                        success: function (data) {
+                            window.location.href = "/Customers/List"
+                        },
+                        error: function (ex) {
+                            alert("error");
+                        }
+                    });
+                }
+
+
+            });
+
+
+            function validate() {
+
+                var name = document.getElementById("Name").value;
+
+                var address = document.getElementById("Address").value;
+
+                var phonenumber = document.getElementById("phonenumber").value;
+
+                var email = document.getElementById("Email").value;
+
+                var mailformat = new RegExp(/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/);
+
+                var phonNumReg = new RegExp(/^[0-9]{10}$/);
+
+
+
+
+                var isvalid = true;
+                //name
+                var span = document.getElementById("txtName");
+                if (name == "" || name.length == 0) {
+                    span.innerText = "Please Enter Your Name";
+                    span.style.display = "block";
+
+                    isvalid = false;
+                }
+                else {
+                    span.style.display = "none";
+                }
+                //Address
+
+
+                var spanaddress = document.getElementById("txtAddress");
+                if (address == "" || address == 0) {
+                    spanaddress.innerText = "Please Enter Your Address";
+                    spanaddress.style.display = "block";
+
+                    isvalid = false;
+                }
+                else {
+                    spanaddress.style.display = "none";
+                }
+                //phonenumber
+
+                var nummobile = document.getElementById("txtphonenumber");
+                var isValidPhone = phonNumReg.test(phonenumber);
+                debugger;
+                if (phonenumber === "" || !isValidPhone) {
+                    nummobile.innerText = "Pease enter a valid 10-digit phone number.";
+                    nummobile.style.display = "block";
+                    isvalid = false;
+                }
+                else {
+                    nummobile.style.display = "none";
+                }
+                //email
+
+                var spanemail = document.getElementById("txtEmail");
+
+
+                if (!mailformat.test(email)) {
+                    spanemail.innerText = "Please Enter Valid Email Address";
+                    spanemail.style.display = "block";
+                    isvalid = false;
+                }
+                else {
+                    spanemail.style.display = "none";
+                }
+
+                return isvalid;
+
+
+            }
+        });
+
+    </script>
+}
